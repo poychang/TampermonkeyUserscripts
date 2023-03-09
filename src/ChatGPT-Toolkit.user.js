@@ -65,7 +65,7 @@
         // expand
         defaultManualSubmitText.push({ text: "提供細節", value: "請提供更多細節說明" });
         // translate to TC
-        defaultManualSubmitText.push({ text: "翻譯成繁中", value: "請將上述回應內容翻譯成臺灣常用的繁體中文" });
+        defaultManualSubmitText.push({ text: "翻譯成繁中", value: "請將上述回應內容翻譯成臺灣的繁體中文" });
         // translate to EN
         defaultManualSubmitText.push({ text: "翻譯成英文", value: "Please translate the above response into English." });
 
@@ -154,7 +154,7 @@
                     }
 
                     const button = document.createElement("button");
-                    button.style.border = "1px solid #d1d5db";
+                    button.style.border = "1px solid rgba(129, 120, 106, 0.5)";
                     button.style.borderRadius = "5px";
                     button.style.padding = "0.5rem 1rem";
                     button.style.margin = "0.5rem";
