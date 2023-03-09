@@ -29,10 +29,10 @@
 
         // 解析參數
         let prompt = params.get('prompt')
-            .replace(/\r/g, '')
-            .replace(/\s+$/g, '')
-            .replace(/\n{3,}/sg, '\n\n')
-            .replace(/^\s+|\s+$/sg, '')
+        .replace(/\r/g, '')
+        .replace(/\s+$/g, '')
+        .replace(/\n{3,}/sg, '\n\n')
+        .replace(/^\s+|\s+$/sg, '')
         let submit = params.get("autoSubmit");
 
         let autoSubmit = false;
@@ -54,6 +54,121 @@
             history.replaceState({}, document.title, window.location.pathname + window.location.search);
         }
     }
+
+    const AddInitPrompButton = () =>{
+        let defaultManualSubmitText = [];
+
+        defaultManualSubmitText.push({ id: 'C# Expert', text: "C# Expert", value: "你現在是一個C#/.NET專家，請使用繁體中文和我討論開發程式的問題。接下來，請等我提供下個提示之後，你再回應。" });
+        defaultManualSubmitText.push({ id: 'IT Expert', text: "IT Expert", value: "I want you to act as an IT Expert. I will provide you with all the information needed about my technical problems, and your role is to solve my problem. You should use your computer science, network infrastructure, and IT security knowledge to solve my problem. Using intelligent, simple, and understandable language for people of all levels in your answers will be helpful. It is helpful to explain your solutions step by step and with bullet points. Try to avoid too many technical details, but use them when necessary. I want you to reply with the solution, not write any explanations." });
+        defaultManualSubmitText.push({ id: 'Midjourney Prompt Generator', text: "Midjourney Prompt Generator", value: "我希望你能擔任Midjourney人工智慧程式的提示生成器，你的工作是提供詳細且富有創意的描述，以激發AI生成獨特且有趣的圖像。請牢記，AI能夠理解多種語言並解釋抽象的概念，因此請盡可能想像豐富、描述詳細。例如，你可以描述一個未來城市的場景，或是充滿奇怪生物的超現實風景。描述得越詳細、越富有想像力，生成的圖像就越有趣。接下來，請等我提供下個提示之後，你再回應。" });
+
+        let globalButtons = [];
+        let buttonsArea;
+        let talkBlockToInsertButtons;
+
+        const main = document.querySelector("body");
+
+        let mutationObserverTimer = undefined;
+        const obs = new MutationObserver(() => {
+
+            // 尋找新聊天記錄的空白區，用來插入按鈕
+            const talkBlocks = document.querySelectorAll(
+                ".text-4xl.font-semibold.text-center.text-gray-200.dark\\:text-gray-600.ml-auto.mr-auto.mb-10.sm\\:mb-16.flex.gap-2.items-center.justify-center.flex-grow:not(.custom-buttons-area)"
+            );
+            if (!talkBlocks || !talkBlocks.length) {
+                return;
+            }
+
+            if (talkBlockToInsertButtons != talkBlocks[talkBlocks.length - 1]) {
+                if (buttonsArea) {
+                    // 重新將按鈕區和按鈕移除
+                    buttonsArea.remove();
+                }
+            }
+
+            clearTimeout(mutationObserverTimer);
+            mutationObserverTimer = setTimeout(() => {
+
+                // 先停止觀察，避免自訂畫面變更被觀察到
+                stop();
+
+                if (talkBlockToInsertButtons != talkBlocks[talkBlocks.length - 1]) {
+                    // 要被插入按鈕的區塊
+                    talkBlockToInsertButtons = talkBlocks[talkBlocks.length - 1];
+
+                    // 重新建立回應按鈕
+                    rebuild_buttons();
+                }
+
+                // 重新開始觀察
+                start();
+
+            }, 600);
+
+        });
+
+        function rebuild_buttons() {
+
+            // remove custom buttons
+            globalButtons = [];
+
+            // create a new buttons area
+            buttonsArea = document.createElement("div");
+            buttonsArea.classList = "custom-buttons-area flex items-center justify-center gap-2";
+            buttonsArea.style.overflowY = "auto";
+            buttonsArea.style.display = "flex";
+            buttonsArea.style.flexWrap = "wrap";
+            buttonsArea.style.paddingTop = 0;
+            buttonsArea.style.paddingLeft = "calc(30px + 0.75rem)";
+            talkBlockToInsertButtons.before(buttonsArea);
+
+            // add buttons
+            defaultManualSubmitText.forEach((item) => {
+
+                let lastText = talkBlockToInsertButtons.innerText;
+
+                const button = document.createElement("button");
+                button.style.border = "1px solid rgba(129, 120, 106, 0.5)";
+                button.style.borderRadius = "5px";
+                button.style.padding = "0.5rem 1rem";
+                button.style.margin = "0.5rem";
+
+                button.innerText = item.text;
+                button.addEventListener("click", () => {
+
+                    // 填入 prompt
+                    const textarea = document.querySelector("textarea");
+                    textarea.value = item.value;
+                    textarea.dispatchEvent(new Event("input", { bubbles: true }));
+                    textarea.focus();
+                    textarea.setSelectionRange(textarea.value.length, textarea.value.length); //將選擇範圍設定為文本的末尾
+                    textarea.scrollTop = textarea.scrollHeight; // 自動捲動到最下方
+
+                    // 預設的送出按鈕
+                    const button = textarea.parentElement.querySelector("button:last-child");
+                    button.click();
+
+                });
+
+                buttonsArea.append(button);
+                globalButtons.push(button);
+            });
+        }
+
+        const start = () => {
+            obs.observe(main.parentElement, {
+                childList: true,
+                attributes: true,
+                subtree: true,
+            });
+        };
+
+        const stop = () => {
+            obs.disconnect();
+        };
+
+        start();
+    };
 
     const StartMonitoringResponse = () => {
 
@@ -208,6 +323,8 @@
 
             // 自動從 URL 填入提詞(Prompt)
             AutoFillFromURI();
+
+            AddInitPrompButton();
 
             // 自動監控所有 ChatGPT 回應，用以判斷何時要顯示回應按鈕
             StartMonitoringResponse();
