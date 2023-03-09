@@ -3,6 +3,7 @@
 // @source       https://github.com/poychang/TampermonkeyUserscripts/raw/main/src/ChatGPT-Toolkit.user.js
 // @namespace    https://github.com/poychang/TampermonkeyUserscripts/raw/main/src/ChatGPT-Toolkit.user.js
 // @updateURL    https://github.com/poychang/TampermonkeyUserscripts/raw/main/src/ChatGPT-Toolkit.user.js
+// @downloadURL  https://github.com/poychang/TampermonkeyUserscripts/raw/main/src/ChatGPT-Toolkit.user.js
 // @version      0.1
 // @description  提升 ChatGPT 網站的使用體驗，提供一些好用功能。像是自動從 URL 填入提示、在回應的地方出現自動提示按鈕
 // @author       You
