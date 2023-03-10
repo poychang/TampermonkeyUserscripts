@@ -172,18 +172,26 @@
 
     const StartMonitoringResponse = () => {
 
-        let defaultManualSubmitText = [];
-
-        // continue
-        defaultManualSubmitText.push({ id: 'continue', text: "繼續", value: "繼續" });
-        // exemplify
-        defaultManualSubmitText.push({ text: "舉例說明", value: "請舉例說明" });
-        // expand
-        defaultManualSubmitText.push({ text: "提供細節", value: "請提供更多細節說明" });
-        // translate to TC
-        defaultManualSubmitText.push({ text: "翻譯成繁中", value: "請將上述回應內容翻譯成臺灣的繁體中文" });
-        // translate to EN
-        defaultManualSubmitText.push({ text: "翻譯成英文", value: "Please translate the above response into English." });
+        const defaultManualSubmitText = [
+          // continue
+          { text: "繼續", value: "繼續" },
+          // exemplify
+          { text: "舉例說明", value: "請舉例說明" },
+          // expand
+          { text: "提供細節", value: "請提供更多細節說明" },
+          // explain
+          { text: "解釋清楚", value: "請用更清楚的方式解釋" },
+          // list explain
+          { text: "條列總結", value: "請以條列式的方式總結上述內容" },
+          // rewrite
+          { text: "重寫內容", value: "請重寫上述內容" },
+          // short
+          { text: "簡化內容", value: "請用簡短的方式說明上述內容" },
+          // translate to TC
+          { text: "翻譯成繁中", value: "請將上述內容翻譯成流暢的繁體中文" },
+          // translate to EN
+          { text: "翻譯成英文", value: "請將上述內容翻譯成流暢的英文" },
+        ];
 
         let globalButtons = [];
         let buttonsArea;
