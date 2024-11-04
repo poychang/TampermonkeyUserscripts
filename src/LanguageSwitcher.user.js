@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         中、英文網頁切換器
-// @version      1.7.0
+// @version      1.10.1
 // @description  按下 alt+s 快速鍵就會自動將目前網頁切換至中文版或英文版
 // @license      MIT
 // @homepage     https://blog.miniasp.com/
@@ -15,11 +15,15 @@
 (function () {
     'use strict';
     document.addEventListener('keydown', (ev) => {
-        if (ev.altKey && ev.key === 'S' && !/^(?:input|select|textarea|button)$/i.test(ev.target.nodeName)) {
-            alert('你是不是不小心按到了 CAPSLOCK 鍵？');
-            return;
-        }
-        if (ev.altKey && ev.key === 's' && !/^(?:input|select|textarea|button)$/i.test(ev.target.nodeName)) {
+        const isCapsLockOn = ev.getModifierState('CapsLock');
+        const isAltS = ev.altKey && ev.code === 'KeyS';
+        const inExcludedTargets = /^(?:input|select|textarea|button)$/i.test(ev.target.nodeName);
+
+        if (isAltS && !inExcludedTargets) {
+            if (isCapsLockOn) {
+              alert('你是不是不小心按到了 CAPSLOCK 鍵？');
+              return;
+            }
 
             (function () {
                 var idx,
@@ -27,16 +31,34 @@
                     ln = location.href,
                     pn = location.pathname;
 
-                if (ln === 'https://getbootstrap.com/' || ln === 'http://getbootstrap.com/') {
-                    void (location.href = 'http://bootstrap.hexschool.com');
+                function switchWikipediaLang(toLang) {
+                    let link = document.querySelector("#p-lang")?.querySelector(`a[hreflang="${toLang}"]`);
+                    if (link) { link.click(); return }
+
+                    let chkbox = document.querySelector('#p-lang-btn-checkbox');
+                    if (chkbox) {
+                        chkbox.click();
+                        let waitTimer = 0;
+                        let si = setInterval(() => {
+                            let langList = document.querySelector('.uls-language-list');
+                            if (langList) {
+                                clearInterval(si);
+                                chkbox.click();
+                                document.querySelector('.uls-language-list')?.querySelector(`a[hreflang="${toLang}"]`)?.click();
+                            } else {
+                                if (waitTimer++ > 100) { clearInterval(si); }
+                            }
+                        }, 50);
+                        return;
+                    }
                 }
 
                 if (location.hostname == 'zh.wikipedia.org') {
-                    document.querySelector("#p-lang > div > ul > li.interlanguage-link.interwiki-en > a").click();
+                    switchWikipediaLang('en');
                 }
 
                 if (location.hostname == 'en.wikipedia.org') {
-                    document.querySelector("#p-lang > div > ul > li.interlanguage-link.interwiki-zh > a").click();
+                    switchWikipediaLang('zh');
                 }
 
                 if (ln.indexOf('//getbootstrap.com/docs/3.3/') >= 0) {
@@ -46,13 +68,24 @@
                     void (location.href = ln.replace(/v3\.bootcss\.com\//i, 'getbootstrap.com/docs/3.3/'));
                 }
 
+                if (ln === 'https://getbootstrap.com/') {
+                    void (location.href = 'https://bootstrap5.hexschool.com');
+                }
                 if (ln.indexOf('//bootstrap.hexschool.com/') >= 0) {
                     void (location.href = ln.replace(/bootstrap\.hexschool\.com/i, 'getbootstrap.com'));
                 }
-                if (ln.indexOf('//getbootstrap.com/docs/4.0/') >= 0) {
-                    void (location.href = ln.replace(/http(s?)\:\/\/getbootstrap\.com/i, 'http://bootstrap.hexschool.com'));
+                if (ln.indexOf('//bootstrap5.hexschool.com/') >= 0) {
+                    void (location.href = ln.replace(/bootstrap5\.hexschool\.com/i, 'getbootstrap.com'));
                 }
-
+                if (ln.indexOf('//bootstrap5.hexschool.com/') >= 0) {
+                    void (location.href = ln.replace(/bootstrap5\.hexschool\.com/i, 'getbootstrap.com'));
+                }
+                if (ln.indexOf('//getbootstrap.com/docs/4') >= 0) {
+                    void (location.href = ln.replace(/http(s?)\:\/\/getbootstrap\.com\/docs\/4.\d/i, 'http://bootstrap.hexschool.com/docs/4.2'));
+                }
+                if (ln.indexOf('//getbootstrap.com/docs/5') >= 0) {
+                    void (location.href = ln.replace(/http(s?)\:\/\/getbootstrap\.com\/docs\/5.\d/i, 'http://bootstrap5.hexschool.com/docs/5.1'));
+                }
                 if (ln.indexOf('//doc.rust-lang.org/stable/book/') >= 0) {
                     void (location.href = ln.replace(/\/\/doc\.rust\-lang\.org\/stable\/book\//i, '//rust-lang.tw/book-tw/'));
                 }
@@ -75,10 +108,17 @@
                 }
 
                 if (ln.indexOf('//material.angular.io/') >= 0) {
-                    void (location.href = ln.replace(/material.angular\.io/i, 'material.angular.tw'));
+                    void (location.href = ln.replace(/material\.angular\.io/i, 'material.angular.tw'));
                 }
                 if (ln.indexOf('//material.angular.tw/') >= 0) {
-                    void (location.href = ln.replace(/material.angular\.tw/i, 'material.angular.io'));
+                    void (location.href = ln.replace(/material\.angular\.tw/i, 'material.angular.io'));
+                }
+
+                if (ln.indexOf('//playwright.dev/') >= 0) {
+                    void (location.href = ln.replace(/playwright\.dev/i, 'playwright.tw'));
+                }
+                if (ln.indexOf('//playwright.tw/') >= 0) {
+                    void (location.href = ln.replace(/playwright\.tw/i, 'playwright.dev'));
                 }
 
                 if (ln.indexOf('//www.jquery123.com/') >= 0) {
@@ -220,7 +260,6 @@
                     }
                 }
             }());
-
         }
     });
 })();
