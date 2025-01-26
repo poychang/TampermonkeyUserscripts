@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         網站追蹤碼移除工具
-// @version      1.12
+// @version      1.14
 // @description  移除大多數網站附加在超連結上的 Query String 追蹤碼
 // @license      MIT
 // @homepage     https://blog.miniasp.com/
@@ -103,7 +103,10 @@
             .removeByDomain('devblogs.microsoft.com', 'utm_description')
             .removeByDomain('devblogs.microsoft.com', 'ocid')
 
-            // Microsoft
+            // blogs.microsoft.com
+            .removeByDomain('blogs.microsoft.com', 'cr_cc')
+
+            // Microsoft sites
             .remove('wt.mc_id')
             .removeByDomain('learn.microsoft.com', 'ocid')
             .removeByDomain('learn.microsoft.com', 'redirectedfrom')
@@ -118,16 +121,26 @@
             .removeByDomain('www.bilibili.com', 'share_source')
             .removeByDomain('www.bilibili.com', 'share_medium')
 
+            // Substack related email
+            .removeByDomainThatMatchAllKeys("*.substack.com", ['publication_id', 'post_id', 'isFreemail', 'r', 'token', 'triedRedirect'])
+            .removeByDomainThatMatchAllKeys("unchartedterritories.tomaspueyo.com", ['publication_id', 'post_id', 'isFreemail', 'r', 'token', 'triedRedirect'])
+            .removeByDomainThatMatchAllKeys("www.latent.space", ['publication_id', 'post_id', 'isFreemail', 'r', 'token', 'triedRedirect'])
+
+            // sendgrid.com
+            .remove('sendgrid.com', 'mc')
+            .remove('sendgrid.com', 'mcd')
+            .remove('sendgrid.com', 'cvosrc')
+
+            // Yahoo sites
+            .remove('guce_referrer')
+            .remove('guce_referrer_sig')
+
             // Others
             .remove('__tn__')
             .remove('gclsrc')
             .remove('itm_source')
             .remove('itm_medium')
             .remove('itm_campaign')
-            .remove('mc') // sendgrid.com
-            .remove('mcd') // sendgrid.com
-            .remove('cvosrc') // sendgrid.com
-            .remove('cr_cc') // https://blogs.microsoft.com/
 
             .remove('sc_channel')
             .remove('sc_campaign')
@@ -143,10 +156,6 @@
             .remove('__hsfp')
             .remove('_gl')
 
-            // Yahoo News
-            .remove('guce_referrer')
-            .remove('guce_referrer_sig')
-
             .toString();
 
         if (s && location.href !== s) {
@@ -159,18 +168,25 @@
             const parsedUrl = new URL(url);
             return {
                 remove(name, value) {
-                    if (parsedUrl.searchParams.has(name)) {
-                        if (value && value === parsedUrl.searchParams.get(name)) {
-                            parsedUrl.searchParams.delete(name);
-                        }
-                        if (!value) {
-                            parsedUrl.searchParams.delete(name);
-                        }
+                    if (parsedUrl.searchParams.has(name) && (!value || value === parsedUrl.searchParams.get(name))) {
+                        parsedUrl.searchParams.delete(name);
                     }
                     return TrackingTokenStripper(parsedUrl.toString());
                 },
                 removeByDomain(domain, name) {
-                    if (parsedUrl.hostname.toLocaleLowerCase() === domain.toLocaleLowerCase()) {
+                    const hostname = parsedUrl.hostname.toLocaleLowerCase();
+                    const normalizedDomain = domain.toLocaleLowerCase();
+
+                    const isWildcard = normalizedDomain.startsWith('*') || normalizedDomain.startsWith('.');
+                    const domainToMatch = isWildcard
+                        ? normalizedDomain.replace(/^\*\./, '').replace(/^\./, '') // Remove wildcard character
+                        : normalizedDomain;
+
+                    const domainMatch = isWildcard
+                        ? hostname.endsWith(domainToMatch) // Wildcard only checks if it ends with the specified domain
+                        : hostname === domainToMatch; // Non-wildcard must match exactly
+
+                    if (domainMatch) {
                         if (name.indexOf('=') >= 0) {
                             var [key, value] = name.split("=");
                             return this.remove(key, value);
@@ -181,11 +197,44 @@
                         return this;
                     }
                 },
+                /**
+                 * 僅當所有 keys 都存在時，移除這些 Query string keys
+                 * @param {string|null} domain 指定的 domain，若為 null 則符合所有域名
+                 * @param  {...string} keys 不定個數的 query string keys
+                 * @returns {object} 返回 TrackingTokenStripper 物件
+                 */
+                removeByDomainThatMatchAllKeys(domain, keys) {
+                    const hostname = parsedUrl.hostname.toLocaleLowerCase();
+                    const normalizedDomain = domain ? domain.toLocaleLowerCase() : null;
+
+                    const isWildcard = normalizedDomain && (normalizedDomain.startsWith('*') || normalizedDomain.startsWith('.'));
+                    const domainToMatch = normalizedDomain
+                        ? isWildcard
+                            ? normalizedDomain.replace(/^\*\./, '').replace(/^\./, '') // 移除萬用字元
+                            : normalizedDomain
+                        : null;
+
+                    const domainMatch = normalizedDomain
+                        ? isWildcard
+                            ? hostname.endsWith(domainToMatch) // 萬用字元只檢查是否以指定域名結尾
+                            : hostname === domainToMatch // 非萬用字元完全符合
+                        : true; // 如果 domain 為空，視為符合任何域名
+
+                    // 確認所有 keys 都存在
+                    const allKeysExist = keys.every(key => parsedUrl.searchParams.has(key));
+
+                    if (domainMatch && allKeysExist) {
+                        keys.forEach(key => {
+                            parsedUrl.searchParams.delete(key);
+                        });
+                    }
+
+                    return this;
+                },
                 toString() {
                     return parsedUrl.toString();
                 }
             }
-        }
+        };
     }
-
-})();
+}) ();

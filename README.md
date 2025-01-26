@@ -60,6 +60,46 @@
   <tbody>
     <tr>
       <td>
+        <a href="https://github.com/doggy8088/TampermonkeyUserscripts/raw/main/src/GitHubDocsHotkeys.user.js"><img src="https://user-images.githubusercontent.com/88981/169986095-a54f32bd-55a6-4de8-bad6-aa3b1874ce07.png" width="32"/></a>
+      </td>
+      <td>GitHub Docs: 好用的鍵盤快速鍵集合</td>
+      <td>
+        目前提供以下快速鍵：<br>
+        <ol>
+          <li>按下 <code>f</code> 可快速隱藏非主要內容的區塊 (方便進行翻譯)</li>
+        </ol>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="https://github.com/doggy8088/TampermonkeyUserscripts/raw/main/src/FeloSearchHotkeys.user.js"><img src="https://user-images.githubusercontent.com/88981/169986095-a54f32bd-55a6-4de8-bad6-aa3b1874ce07.png" width="32"/></a>
+      </td>
+      <td>Felo Search: 好用的鍵盤快速鍵集合</td>
+      <td>
+        目前提供以下快速鍵：<br>
+        <ol>
+          <li>按下 <code>ctrl+b</code> 可快速切換側邊欄</li>
+          <li>按下 <code>ctrl+delete</code> 可快速刪除當前聊天記錄</li>
+          <li>按下 <code>j</code> 可快速切換到下一個歷史紀錄</li>
+          <li>按下 <code>k</code> 可快速切換到上一個歷史紀錄</li>
+        </ol>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="https://github.com/doggy8088/TampermonkeyUserscripts/raw/main/src/ChatGPTHotkeys.user.js"><img src="https://user-images.githubusercontent.com/88981/169986095-a54f32bd-55a6-4de8-bad6-aa3b1874ce07.png" width="32"/></a>
+      </td>
+      <td>ChatGPT: 好用的鍵盤快速鍵集合</td>
+      <td>
+        目前提供以下快速鍵：<br>
+        <ol>
+          <li>按下 <code>ctrl+delete</code> 可快速刪除目前的聊天記錄</li>
+          <li>按下 <code>ctrl+b</code> 可快速切換側邊欄</li>
+        </ol>
+      </td>
+    </tr>
+    <tr>
+      <td>
         <a href="https://github.com/doggy8088/TampermonkeyUserscripts/raw/main/src/CozeShortcuts.user.js"><img src="https://user-images.githubusercontent.com/88981/169986095-a54f32bd-55a6-4de8-bad6-aa3b1874ce07.png" width="32"/></a>
       </td>
       <td><a href="https://www.coze.com/">Coze</a>: 提供額外的快速鍵方便使用</td>
@@ -77,15 +117,6 @@
           <li>按下 <code>alt+4</code> 可在 Space 頁面切換上面的頁籤: Knowledge</li>
           <li>按下 <code>alt+5</code> 可在 Space 頁面切換上面的頁籤: Cards</li>
         </ol>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <a href="https://github.com/doggy8088/TampermonkeyUserscripts/raw/main/src/FeloSearchAutoFill.user.js"><img src="https://user-images.githubusercontent.com/88981/169986095-a54f32bd-55a6-4de8-bad6-aa3b1874ce07.png" width="32"/></a>
-      </td>
-      <td><a href="https://felo.ai/">Felo Search</a>: 自動填入提示文字並自動送出</td>
-      <td>
-        自動填入 Felo Search 提示文字並可設定自動送出提問
       </td>
     </tr>
     <tr>
@@ -108,6 +139,15 @@
           <li><code>learn.microsoft.com</code>: 按下 <code>Ctrl-C</code> 兩次以上就會自動將查詢字串中的 <code>view</code> 參數移除，確保複製的網址可以連到最新版。</li>
           <li><code>github.com</code>: 按下兩次 <code>Ctrl-C</code> 會自動複製當前 Repo 網址，按下三次 <code>Ctrl-C</code> 會複製包含 <code>git clone REPO_URL</code> 命令。如果在 <code>特定分支</code> 頁面中按三次，會自動取出該分支的內容。如果在 <code>pull requests</code> 頁面中按三次，會自動取出該 PR 回來。</li>
         </ol>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="https://github.com/doggy8088/TampermonkeyUserscripts/raw/main/src/GeminiToggleAudioInput.user.js"><img src="https://user-images.githubusercontent.com/88981/169986095-a54f32bd-55a6-4de8-bad6-aa3b1874ce07.png" width="32"/></a>
+      </td>
+      <td><a href="https://gemini.google.com/">Gemini</a>: 自動切換語音輸入模式 (alt+t)</td>
+      <td>
+        使用快速鍵 alt+t 來快速切換 Gemini 上面的語音輸入功能
       </td>
     </tr>
     <tr>
@@ -456,6 +496,19 @@
       <td>Facebook: 移除「商店」按鈕</td>
       <td>
         移除 FB 畫面上方的「商店」頁籤（上面全部都是色情廣告）
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="https://github.com/doggy8088/TampermonkeyUserscripts/raw/main/src/FacebookHotkeys.user.js"><img src="https://user-images.githubusercontent.com/88981/169986095-a54f32bd-55a6-4de8-bad6-aa3b1874ce07.png" width="32"/></a>
+      </td>
+      <td>Facebook: 好用的鍵盤快速鍵集合</td>
+      <td>
+        目前提供以下快速鍵：<br>
+        <ol>
+          <li>按下 <code>ctrl+b</code> 可快速切換側邊欄</li>
+          <li>按下 <code>alt+b</code> 可快速封鎖濫發廣告的帳號</li>
+        </ol>
       </td>
     </tr>
     <tr>
